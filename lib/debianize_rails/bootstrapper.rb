@@ -20,6 +20,7 @@ module DebianizeRails
       Dir[File.expand_path("../data/*.erb", __FILE__)].each(&method(:build_template))
       build_install_file
       copy_license
+      make_format_file
     rescue => e
       FileUtils.rmdir(@debian_dir) if File.exists?(@debian_dir) && File.directory?(@debian_dir)
       raise e
@@ -32,6 +33,14 @@ module DebianizeRails
         (@errors ||= []) << "Invalid value for #{key}" if value.nil? || value == ""
       end
       (@errors ||= []) << "Invalid path given for target application!" unless File.exists?(@options.path) && File.directory?(@options.path)
+    end
+
+    def make_format_file
+      source_dir = File.join(@debian_dir, "source")
+      FileUtils.mkdir(source_dir)
+      File.open(File.join(source_dir, "format")) do |f|
+        f.puts "1.0"
+      end
     end
 
     def build_template(filename)
