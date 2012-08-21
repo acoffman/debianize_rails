@@ -6,8 +6,6 @@ require 'time'
 require 'ostruct'
 require 'debianize_rails'
 
-require 'pry'
-
 class DebianizeOptionParser
   def self.parse(args)
 
@@ -111,7 +109,6 @@ if __FILE__ == $0
     _run_command(DebianizeRails::Bootstrapper.new(options)) if options.bootstrap
     _run_command(DebianizeRails::Packager.new(options)) if options.build_package
   rescue => e
-    binding.pry
     puts e.message
   end
 end
