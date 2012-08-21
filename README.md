@@ -5,7 +5,7 @@ debianize_rails
 
 Does the bare minimum to get a Rails application packaged up for debian.
 
-Tries to figure out some sane defaults from the environment it was run in and sub those values into the debian/* files that it will create. Most values are overridable at the command line.
+Tries to figure out some sane defaults from the environment it was run in and sub those values into the debian/* files that it will create. Most values are overridable at the command line and the generated defaults will obviously differ from what is seen below.
 
         Usage (in rails app directory): debianize_rails [opts]
 
