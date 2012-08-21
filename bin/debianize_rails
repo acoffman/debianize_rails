@@ -1,0 +1,119 @@
+#! /usr/bin/env ruby
+
+require 'optparse'
+require 'etc'
+require 'time'
+require 'ostruct'
+require 'debianize_rails'
+
+require 'pry'
+
+class DebianizeOptionParser
+  def self.parse(args)
+
+    options = OpenStruct.new
+    options.compat = "7"
+    options.license = :gpl2
+    options.timestamp = Time.now.rfc2822
+    options.version = "0.1"
+    options.path = Dir.pwd
+    options.server_path = "/var/www"
+
+    username = Etc.getlogin
+    options.author =  `finger #{username} | grep Name | awk -F "Name:" '{print $2}'`.strip
+    options.email = "#{username}@genome.wustl.edu"
+
+    options.packages = ["genome-rails-prod"]
+    options.package_name = File.basename(Dir.pwd)
+
+    opts = OptionParser.new do |opts|
+      opts.banner = "Usage (in rails app directory): debianize_rails [opts]"
+
+      opts.separator <<-eof
+
+This command will attempt to intuit sane defaults (overridable with options) to generate the intial 
+debian packaging files needed to make a .deb. It will then try to build the package.
+WARNING: This can blow away any existing debian directory you have, so be careful!
+
+Options:
+                     eof
+
+      opts.on("-c", "--compat LEVEL", "debian package compatability level (default: 7)") do |compat|
+        options.compat = compat
+      end
+
+      valid_licenses = [:mit, :artistic, :gpl2, :gpl3]
+      opts.on("-l", "--license LICENSE", valid_licenses ,"License to use in debian copyright file (default: GPLv2)",
+              "valid values: #{valid_licenses.join(", ")}") do |license|
+        options.license = license
+      end
+
+      opts.on("-a", "--author AUTHOR", "author name to use in debian files (default: #{options.author})") do |author|
+        options.author = author
+      end
+
+      opts.on("-e", "--email EMAIL", "email address to use in debian files (default: #{options.email})") do |email|
+        options.email = email
+      end
+
+      opts.on("-d", "--depends PACKAGE1,PACKAGE2", Array, "List of debian package dependencies (app specific, not for rails in general)") do |packages| 
+        options.packages << packages
+      end
+
+      opts.on("-n", "--package-name NAME", "Name of debian package to construct (default: #{options.package_name})") do |name|
+        options.package_name = name
+      end
+
+      opts.on("-v", "--package-version VERSION", "Version to set the debian package to (default: #{options.version})") do |version|
+        options.version = version
+      end
+
+      opts.on("-t", "--target-app PATH", "Path to the app to be packaged (default: #{options.path})") do |path|
+        options.path = path
+      end
+
+      opts.on("-s", "--server-path PATH", "Deploy location on your server (default: #{options.server_path})") do |path|
+        options.server_path = server_path
+      end
+
+      opts.on("-b", "--bootstrap", "Bootstrap a new debian directory") do
+        options.bootstrap = true
+      end
+
+      opts.on("-p", "--build-package", "Build a .deb") do
+        options.build_package = true
+      end
+
+      opts.on("-h", "--help", "Display this screen") do
+        puts opts
+        exit
+      end
+
+    end
+    opts.parse! args
+    options
+  end
+end
+
+if __FILE__ == $0
+  def _run_command(instance)
+    if instance.valid?
+      instance.run!
+    else
+      raise instance.errors.join("\n")
+    end
+  end
+
+  begin
+    ARGV.push "-h" if ARGV.empty?
+    options = DebianizeOptionParser.parse(ARGV)
+     raise "Must select -b -p or both!" unless options.bootstrap || options.build_package
+    _run_command(DebianizeRails::Bootstrapper.new(options)) if options.bootstrap
+    _run_command(DebianizeRails::Packager.new(options)) if options.build_package
+  rescue => e
+    binding.pry
+    puts e.message
+  end
+end
+
+
