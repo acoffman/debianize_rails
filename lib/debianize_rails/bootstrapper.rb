@@ -55,6 +55,7 @@ module DebianizeRails
     def build_install_file
       files = Dir[File.join(Dir.pwd, "*")].map{|file| File.basename(file)}
       files.push(".bundle") unless files.include?(".bundle")
+      files.reject! {|file| file.downcase == "debian"}
       File.open(File.join(@debian_dir, "#{@options.package_name}.install"), "w") do |f|
         files.each do |cur|
           f.puts "#{cur} #{File.join(@options.server_path, @options.package_name)}"
