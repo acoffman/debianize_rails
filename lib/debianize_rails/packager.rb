@@ -15,6 +15,7 @@ module DebianizeRails
     def run!
       raise "Packager is not in a valid state!" unless valid?
       Dir.chdir(@options.path)
+      raise "Building package failed!" unless system("dpkg-buildpackage")
     end
 
     private
