@@ -1,5 +1,6 @@
 require 'ostruct'
 require 'erb'
+require 'fileutils'
 require 'debianize_rails/packager'
 require 'debianize_rails/version'
 require 'debianize_rails/bootstrapper'
