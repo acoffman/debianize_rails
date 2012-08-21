@@ -22,7 +22,7 @@ module DebianizeRails
       copy_license
       make_format_file
     rescue => e
-      FileUtils.rmdir(@debian_dir) if File.exists?(@debian_dir) && File.directory?(@debian_dir)
+      FileUtils.rm_rf(@debian_dir) if File.exists?(@debian_dir) && File.directory?(@debian_dir)
       raise e
     end
 
@@ -37,8 +37,8 @@ module DebianizeRails
 
     def make_format_file
       source_dir = File.join(@debian_dir, "source")
-      FileUtils.mkdir(source_dir)
-      File.open(File.join(source_dir, "format")) do |f|
+      FileUtils.mkdir(source_dir) unless File.exists?(source_dir)
+      File.open(File.join(source_dir, "format") , "w") do |f|
         f.puts "1.0"
       end
     end
