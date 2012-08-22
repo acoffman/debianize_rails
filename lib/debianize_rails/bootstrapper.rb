@@ -51,7 +51,7 @@ module DebianizeRails
       File.open(dest_path, 'w') do |f|
         f.write(template.result(@options.instance_eval("binding")))
       end
-      FileUtils.chmod("+x", dest_path) if File.basename(dest_path) == "rules"
+      FileUtils.chmod("+x", dest_path) if ["rules", "postinst", "prerm"].include?(File.basename(dest_path))
     end
 
     def build_install_file
