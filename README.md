@@ -6,7 +6,6 @@ debianize_rails
 Does the bare minimum to get a Rails application packaged up for debian.
 
 Tries to figure out some sane defaults from the environment it was run in and sub those values into the debian/* files that it will create. Most values are overridable at the command line and the generated defaults will obviously differ from what is seen below.
-
         Usage (in rails app directory): debianize_rails [opts]
 
         This command will attempt to intuit sane defaults (overridable with options) to generate the intial 
@@ -22,8 +21,12 @@ Tries to figure out some sane defaults from the environment it was run in and su
             -d, --depends PACKAGE1,PACKAGE2  List of debian package dependencies (app specific, not for rails in general)
             -n, --package-name NAME          Name of debian package to construct (default: dgi-db)
             -v, --package-version VERSION    Version to set the debian package to (default: 0.1)
-            -t, --target-app PATH            Path to the app to be packaged (default: /gscuser/acoffman/testing/dgi-db)
+            -t, --target-app PATH            Path to the app to be packaged (default: /Users/acoffman/git/dgi-db)
             -s, --server-path PATH           Deploy location on your server (default: /var/www)
             -b, --bootstrap                  Bootstrap a new debian directory
             -p, --build-package              Build a .deb
+            -g, --generate-passenger-config  Create a barebones default config for Passenger
+                                             Note that you must also supply the -m flag if you select this option
+            -m, --server-name                Value for Passenger ServerName directive.
+                                             Likely the domain/hostname the app will be accessed at.
             -h, --help                       Display this screen
