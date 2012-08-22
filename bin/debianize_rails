@@ -72,7 +72,7 @@ Options:
       end
 
       opts.on("-s", "--server-path PATH", "Deploy location on your server (default: #{options.server_path})") do |path|
-        options.server_path = server_path
+        options.server_path = path
       end
 
       opts.on("-b", "--bootstrap", "Bootstrap a new debian directory") do
@@ -88,7 +88,7 @@ Options:
         options.create_passenger_config = true
       end
 
-      opts.on("-m", "--server-name", "Value for Passenger ServerName directive.", 
+      opts.on("-m", "--server-name NAME", "Value for Passenger ServerName directive.",
               "Likely the domain/hostname the app will be accessed at.") do |name|
         options.server_name = name
       end
