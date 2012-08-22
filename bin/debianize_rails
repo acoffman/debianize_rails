@@ -83,6 +83,16 @@ Options:
         options.build_package = true
       end
 
+      opts.on("-g", "--generate-passenger-config", "Create a barebones default config for Passenger",
+             "Note that you must also supply the -m flag if you select this option" ) do
+        options.create_passenger_config = true
+      end
+
+      opts.on("-m", "--server-name", "Value for Passenger ServerName directive.", 
+              "Likely the domain/hostname the app will be accessed at.") do |name|
+        options.server_name = name
+      end
+
       opts.on("-h", "--help", "Display this screen") do
         puts opts
         exit

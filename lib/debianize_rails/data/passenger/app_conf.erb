@@ -1,0 +1,11 @@
+<VirtualHost *:80>
+   ServerName <%= server_name %>
+   DocumentRoot <%= File.join(server_path, package_name, "public") %>
+   PassengerHighPerformance on
+   <Directory <%= File.join(server_path, package_name, "public") %>>
+      AllowOverride all
+      Options -MultiViews
+   </Directory>
+   AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/json
+   AddOutputFilterByType DEFLATE image/jpeg, image/png, image/gif
+</VirtualHost>
