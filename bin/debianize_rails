@@ -6,8 +6,8 @@ require 'time'
 require 'ostruct'
 require 'debianize_rails'
 
-
 class DebianizeOptionParser
+
   def self.parse(args)
 
     options = OpenStruct.new
@@ -104,24 +104,22 @@ Options:
   end
 end
 
-if __FILE__ == $0
-  def _run_command(instance)
-    if instance.valid?
-      instance.run!
-    else
-      raise instance.errors.join("\n")
-    end
+def _run_command(instance)
+  if instance.valid?
+    instance.run!
+  else
+    raise instance.errors.join("\n")
   end
+end
 
-  begin
-    ARGV.push "-h" if ARGV.empty?
-    options = DebianizeOptionParser.parse(ARGV)
-     raise "Must select -b -p or both!" unless options.bootstrap || options.build_package
-    _run_command(DebianizeRails::Bootstrapper.new(options)) if options.bootstrap
-    _run_command(DebianizeRails::Packager.new(options)) if options.build_package
-  rescue => e
-    puts e.message
-  end
+begin
+  ARGV.push "-h" if ARGV.empty?
+  options = DebianizeOptionParser.parse(ARGV)
+   raise "Must select -b -p or both!" unless options.bootstrap || options.build_package
+  _run_command(DebianizeRails::Bootstrapper.new(options)) if options.bootstrap
+  _run_command(DebianizeRails::Packager.new(options)) if options.build_package
+rescue => e
+  puts e.message
 end
 
 
