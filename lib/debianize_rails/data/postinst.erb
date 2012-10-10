@@ -2,6 +2,7 @@
 set -e
 
 <% if create_passenger_config %>
+<%= "chown -R www-data /var/www/#{package_name}/" %>
 <%= "ln -s /etc/apache2/sites-available/#{package_name} /etc/apache2/sites-enabled/#{package_name}" %>
 /etc/init.d/apache2 restart
 <% end %>
